@@ -1,0 +1,241 @@
+/**
+ * VoicingEditor Styles
+ * 
+ * Piano keyboard visualization with clickable note selection.
+ * White and black keys positioned to resemble real piano layout.
+ */
+
+.voicing-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: var(--bg-elevated);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.voicing-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.voicing-editor-title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.voicing-editor-title h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.voicing-editor-chord-name {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.voicing-editor-reset-btn {
+  padding: 0.5rem 1rem;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.voicing-editor-reset-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.voicing-editor-reset-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.voicing-editor-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.voicing-editor-info p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.voicing-editor-selected-count {
+  font-weight: 600;
+  color: var(--accent-primary);
+}
+
+/* Piano Keyboard Container */
+.voicing-editor-keyboard-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 1rem 0;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.voicing-editor-keyboard {
+  position: relative;
+  min-width: 800px;
+  height: 140px;
+  margin: 0 auto;
+}
+
+/* White Keys */
+.voicing-editor-white-keys {
+  display: flex;
+  position: relative;
+  height: 100%;
+  gap: 2px;
+}
+
+.voicing-editor-white-key {
+  flex: 1;
+  background: white;
+  border: 2px solid #333;
+  border-radius: 0 0 4px 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+
+.voicing-editor-white-key:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.voicing-editor-white-key.selected {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px var(--accent-primary);
+}
+
+.voicing-editor-white-key.selected:hover {
+  background: var(--accent-hover);
+}
+
+.voicing-editor-key-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #666;
+  user-select: none;
+}
+
+.voicing-editor-white-key.selected .voicing-editor-key-label {
+  color: white;
+}
+
+/* Black Keys */
+.voicing-editor-black-keys {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  pointer-events: none;
+}
+
+.voicing-editor-black-key {
+  position: absolute;
+  width: 2.5%;
+  height: 100%;
+  background: #222;
+  border: 2px solid #000;
+  border-radius: 0 0 4px 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  transform: translateX(-50%);
+  pointer-events: all;
+  z-index: 10;
+}
+
+.voicing-editor-black-key:hover {
+  background: #444;
+  transform: translateX(-50%) translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.voicing-editor-black-key.selected {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px var(--accent-primary);
+}
+
+.voicing-editor-black-key.selected:hover {
+  background: var(--accent-hover);
+}
+
+/* Selected Notes Display */
+.voicing-editor-selected-notes {
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  word-break: break-word;
+}
+
+.voicing-editor-selected-notes strong {
+  color: var(--text-primary);
+}
+
+.voicing-editor-empty {
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .voicing-editor {
+    padding: 1rem;
+  }
+  
+  .voicing-editor-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .voicing-editor-reset-btn {
+    width: 100%;
+  }
+  
+  .voicing-editor-info {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .voicing-editor-keyboard {
+    min-width: 600px;
+  }
+  
+  .voicing-editor-title h3 {
+    font-size: 1rem;
+  }
+}

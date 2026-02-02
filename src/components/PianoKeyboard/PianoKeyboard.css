@@ -1,0 +1,127 @@
+
+.piano-wrapper {
+  background: linear-gradient(180deg, #1a1a2e 0%, #0f0f1a 100%);
+  border-radius: 12px;
+  padding: 20px;
+  overflow-x: auto;
+}
+
+.piano-keyboard {
+  position: relative;
+  height: 160px;
+  min-width: 700px;
+  user-select: none;
+}
+
+.white-keys {
+  display: flex;
+  height: 100%;
+  gap: 2px;
+}
+
+.black-keys {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60%;
+  pointer-events: none;
+}
+
+.piano-key {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+  transition: all 0.08s ease;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.piano-key.white {
+  flex: 1;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f0f0 85%, #d8d8d8 100%);
+  border-radius: 0 0 6px 6px;
+  box-shadow: 
+    0 2px 3px rgba(0,0,0,0.2),
+    inset 0 -2px 4px rgba(0,0,0,0.05);
+}
+
+.piano-key.white:hover {
+  background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 85%, #d0d0d0 100%);
+}
+
+.piano-key.white.in-scale {
+  background: linear-gradient(180deg, #f0f4ff 0%, #e0e8f8 85%, #c8d4e8 100%);
+}
+
+.piano-key.white.played {
+  background: linear-gradient(180deg, #2dd4bf 0%, #14b8a6 100%);
+  box-shadow: 
+    0 0 20px rgba(20, 184, 166, 0.6),
+    inset 0 1px 2px rgba(255,255,255,0.3);
+  transform: translateY(2px);
+}
+
+.piano-key.black {
+  position: absolute;
+  width: 4.5%;
+  height: 100%;
+  background: linear-gradient(180deg, #3a3a4a 0%, #1a1a2a 50%, #0a0a15 100%);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 
+    0 3px 6px rgba(0,0,0,0.4),
+    inset 0 1px 1px rgba(255,255,255,0.05);
+  z-index: 2;
+  transform: translateX(-50%);
+}
+
+.piano-key.black:hover {
+  background: linear-gradient(180deg, #454555 0%, #252535 50%, #151520 100%);
+}
+
+.piano-key.black.in-scale {
+  background: linear-gradient(180deg, #4a4a6a 0%, #2a2a4a 50%, #1a1a30 100%);
+}
+
+.piano-key.black.played {
+  background: linear-gradient(180deg, #14b8a6 0%, #0d9488 100%);
+  box-shadow: 
+    0 0 16px rgba(20, 184, 166, 0.7),
+    inset 0 1px 2px rgba(255,255,255,0.2);
+  transform: translateX(-50%) translateY(2px);
+}
+
+.key-label {
+  font-size: 9px;
+  font-weight: 600;
+  pointer-events: none;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.piano-key.white .key-label {
+  color: #666;
+}
+
+.piano-key.black .key-label {
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.piano-key.played .key-label {
+  color: white;
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .piano-keyboard {
+    height: 130px;
+    min-width: 550px;
+  }
+  
+  .key-label {
+    font-size: 7px;
+  }
+}

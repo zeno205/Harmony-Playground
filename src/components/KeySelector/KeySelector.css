@@ -1,0 +1,119 @@
+
+.key-selector {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.selector-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.selector-group label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.key-wheel {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  max-width: 320px;
+}
+
+.key-btn {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.12s ease;
+}
+
+.key-btn.sharp {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.key-btn:hover {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+  transform: translateY(-1px);
+}
+
+.key-btn.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.mode-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-elevated);
+  color: var(--text-secondary);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.12s ease;
+}
+
+.mode-icon {
+  font-size: 16px;
+}
+
+.mode-btn:hover {
+  border-color: var(--border-hover);
+  color: var(--text-primary);
+}
+
+.mode-btn.active {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+@media (max-width: 768px) {
+  .key-selector {
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+  }
+  
+  .key-wheel {
+    max-width: 100%;
+  }
+  
+  .mode-toggle {
+    width: 100%;
+  }
+  
+  .mode-btn {
+    flex: 1;
+    justify-content: center;
+  }
+}

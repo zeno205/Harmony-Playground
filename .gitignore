@@ -1,0 +1,83 @@
+# Node / build
+node_modules/
+dist/
+build/
+.vite/
+.cache/
+.npm/
+*.tgz
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment files
+.env
+.env.*.local
+.env.local
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor directories and files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.history/
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+ehthumbs.db
+
+# Coverage
+coverage/
+coverage-final.json
+.nyc_output/
+
+# Tests / temp
+jest-cache/
+jest-worker-pool-*/
+*.local
+*.log
+
+# VS Code workspace storage
+.vscode-server/
+
+# Generated / caches
+out/
+.cache-loader/
+parcel-cache/
+
+# Optional lock files (usually keep these under version control)
+# package-lock.json
+# yarn.lock
+
+# Agent / AI assistant related files (local agents, skills, instruction dumps etc.)
+# Keep the code only by ignoring these artifacts
+.github/skills/
+.github/*-instructions.md
+.github/copilot-instructions.md
+.agents/
+*.agent
+*.assistant
+
+# OS files
+*.swp
+*~
+
+# Misc
+.DS_Store
+.env.test
+
+# Ensure workspace source is kept
+!src/**
+!public/**
+!index.html
+!package.json
+!tsconfig.json
+!vite.config.ts
+!README.md

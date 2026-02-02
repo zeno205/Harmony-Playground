@@ -1,0 +1,518 @@
+/**
+ * ChordLibraryModal Styles
+ * 
+ * Full-screen modal layout with chord grid and voicing editor.
+ * Responsive design with mobile-friendly controls.
+ */
+
+.chord-library-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.chord-library-modal {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  max-width: 1400px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Header */
+.chord-library-header {
+  padding: 1.5rem;
+  background: var(--bg-elevated);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chord-library-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chord-library-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.chord-library-close-btn {
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  font-size: 2rem;
+  line-height: 1;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chord-library-close-btn:hover {
+  background: rgba(255, 0, 0, 0.2);
+  color: #ff6b6b;
+  transform: scale(1.1);
+}
+
+/* Controls */
+.chord-library-controls {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.chord-library-search {
+  flex: 1;
+  min-width: 250px;
+  padding: 0.75rem 1rem;
+  background: var(--bg-primary);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.chord-library-search:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+}
+
+.chord-library-search::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.chord-library-filter-toggle {
+  display: flex;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.chord-library-filter-toggle button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.chord-library-filter-toggle button:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.chord-library-filter-toggle button:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.chord-library-filter-toggle button.active {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.chord-library-stats {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Content */
+.chord-library-content {
+  display: grid;
+  grid-template-columns: 1fr 450px;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.chord-library-grid-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.5rem;
+}
+
+.chord-library-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Category sections */
+.chord-library-category {
+  margin-bottom: 2rem;
+}
+
+.chord-library-category h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.chord-library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.75rem;
+}
+
+/* Chord items */
+.chord-library-item {
+  position: relative;
+  padding: 1rem 0.5rem;
+  background: var(--bg-elevated);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.chord-library-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.chord-library-item.selected {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.chord-library-item.custom {
+  border-color: #ffd700;
+}
+
+.chord-library-item-name {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.chord-library-item-badge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #ffd700;
+  font-size: 0.8rem;
+}
+
+/* Voicing panel */
+.chord-library-voicing-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.chord-library-voicing-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.chord-library-add-btn {
+  width: 100%;
+  padding: 1rem;
+  background: var(--accent-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chord-library-add-btn:hover:not(:disabled) {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px var(--accent-glow);
+}
+
+.chord-library-add-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.chord-library-grid-btn {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.chord-library-grid-btn:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+.chord-library-grid-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.chord-library-grid-btn.added {
+  background: rgba(16, 185, 129, 0.3);
+  color: #10b981;
+}
+
+.add-to-grid-hint {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
+}
+
+.add-to-grid-hint kbd {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin: 0 2px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Scrollbar styling */
+.chord-library-grid-container::-webkit-scrollbar,
+.chord-library-voicing-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chord-library-grid-container::-webkit-scrollbar-track,
+.chord-library-voicing-panel::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.chord-library-grid-container::-webkit-scrollbar-thumb,
+.chord-library-voicing-panel::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.chord-library-grid-container::-webkit-scrollbar-thumb:hover,
+.chord-library-voicing-panel::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .chord-library-content {
+    grid-template-columns: 1fr 380px;
+  }
+  
+  .chord-library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .chord-library-modal {
+    max-height: 95vh;
+  }
+  
+  .chord-library-content {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .chord-library-voicing-panel {
+    display: none;
+  }
+  
+  .chord-library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .chord-library-modal-overlay {
+    padding: 0;
+  }
+  
+  .chord-library-modal {
+    border-radius: 0;
+    max-height: 100vh;
+    height: 100vh;
+  }
+  
+  .chord-library-header {
+    padding: 1rem;
+  }
+  
+  .chord-library-content {
+    padding: 1rem;
+  }
+  
+  .chord-library-controls {
+    flex-direction: column;
+  }
+  
+  .chord-library-search {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  .chord-library-filter-toggle {
+    width: 100%;
+  }
+  
+  .chord-library-filter-toggle button {
+    flex: 1;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+  
+  .chord-library-grid {
+    grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+    gap: 0.5rem;
+  }
+  
+  .chord-library-item {
+    padding: 0.75rem 0.25rem;
+    font-size: 0.85rem;
+  }
+}
+
+/* Slot assignment section */
+.slot-assignment-section {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.slot-assignment-section h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.slot-assignment-hint {
+  margin: 0 0 1rem 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.slot-buttons {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.slot-btn {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--bg-primary);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+.slot-btn:hover {
+  background: rgba(20, 184, 166, 0.2);
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.slot-btn.occupied {
+  border-color: rgba(245, 158, 11, 0.5);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+.slot-btn.assigned-here {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: #10b981;
+  border-width: 3px;
+}
+
+.slot-btn.assigned-here:hover {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+.slot-number {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.slot-indicator {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  color: #10b981;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.slot-current-chord {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

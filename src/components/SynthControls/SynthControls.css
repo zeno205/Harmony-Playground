@@ -1,0 +1,163 @@
+
+.synth-controls {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.control-group label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.instrument-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.instrument-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.12s ease;
+  font-family: inherit;
+  min-width: 54px;
+}
+
+.instrument-btn:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-tertiary);
+}
+
+.instrument-btn.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.inst-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.inst-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.instrument-btn.active .inst-label {
+  color: rgba(255,255,255,0.9);
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reverb-slider {
+  width: 120px;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.reverb-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--accent-glow);
+  transition: transform 0.1s ease;
+}
+
+.reverb-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.reverb-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.slider-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 40px;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .synth-controls {
+    width: 100%;
+    gap: 20px;
+  }
+  
+  .instrument-buttons {
+    flex-wrap: wrap;
+  }
+  
+  .slider-container {
+    width: 100%;
+  }
+  
+  .reverb-slider {
+    flex: 1;
+  }
+}
+
+/* Display mode buttons for chord labels */
+.display-mode {
+  display: flex;
+  gap: 6px;
+}
+
+.display-btn {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-elevated);
+  cursor: pointer;
+  font-weight: 700;
+  min-width: 36px;
+}
+
+.display-btn.active {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: white;
+  box-shadow: 0 4px 10px var(--accent-glow);
+}
