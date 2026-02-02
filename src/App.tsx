@@ -23,6 +23,7 @@ interface AppSettings {
   mode: Mode;
   instrument: InstrumentType;
   reverbMix: number;
+  volume: number;
   customVoicings?: Record<string, number[]>; // Map serialized as object
   additionalChords?: ExtendedChordInfo[]; // Extra custom chords (slots 8, 9, 0, etc.)
   keyBindings?: Record<string, string>; // Map of chordId -> key
@@ -62,6 +63,7 @@ function AppContent() {
   const [activeNotes, setActiveNotes] = useState<number[]>([]);
   const [instrument, setInstrument] = useState<InstrumentType>('piano');
   const [reverbMix, setReverbMix] = useState(0.2);
+  const [volume, setVolume] = useState(1.0);
   const [isLoaded, setIsLoaded] = useState(false);
   // Chord label display mode: 'sharp' | 'flat' | 'both'
   const [chordLabelMode, setChordLabelMode] = useState<'sharp'|'flat'|'both'>('sharp');
@@ -91,6 +93,7 @@ function AppContent() {
     stopAll,
     setInstrument: setAudioInstrument,
     setReverbMix: setAudioReverbMix,
+    setVolume: setAudioVolume,
     isInitialized
   } = useAudio();
 
@@ -123,6 +126,9 @@ function AppContent() {
           }
           if (settings.reverbMix !== undefined) {
             setReverbMix(settings.reverbMix);
+          }
+          if (settings.volume !== undefined) {
+            setVolume(settings.volume);
           }
           if (settings.customVoicings) {
             // Deserialize custom voicings from object to Map
@@ -167,6 +173,7 @@ function AppContent() {
             mode: mode,
             instrument: instrument,
             reverbMix: reverbMix,
+            volume: volume,
             customVoicings: voicingsObject,
             additionalChords: additionalChords,
             keyBindings: bindingsObject
@@ -177,7 +184,7 @@ function AppContent() {
       }
     };
     saveSettings();
-  }, [selectedKey, mode, instrument, reverbMix, customVoicings, additionalChords, keyBindings, isLoaded]);
+  }, [selectedKey, mode, instrument, reverbMix, volume, customVoicings, additionalChords, keyBindings, isLoaded]);
 
   // Update chords when key/mode changes
   useEffect(() => {
@@ -215,6 +222,11 @@ function AppContent() {
   useEffect(() => {
     setAudioReverbMix(reverbMix);
   }, [reverbMix, setAudioReverbMix]);
+
+  // Handle volume change
+  useEffect(() => {
+    setAudioVolume(volume);
+  }, [volume, setAudioVolume]);
   
   // Rebinding handlers
   const handleStartRebind = useCallback((chordId: string) => {
@@ -662,9 +674,13 @@ function AppContent() {
           <SynthControls
             instrument={instrument}
             reverbMix={reverbMix}
+            volume={volume}
             onInstrumentChange={handleInstrumentChange}
-            onReverbChange={setReverbMix}            displayMode={chordLabelMode}
-            onDisplayModeChange={setChordLabelMode}          />
+            onReverbChange={setReverbMix}
+            onVolumeChange={setVolume}
+            displayMode={chordLabelMode}
+            onDisplayModeChange={setChordLabelMode}
+          />
 
           <div className="panel-divider" />
           

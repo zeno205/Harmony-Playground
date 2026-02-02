@@ -20,6 +20,19 @@
   font-weight: 600;
 }
 
+/* Audio controls group - stacks reverb and volume vertically */
+.audio-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.audio-control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .instrument-buttons {
   display: flex;
   gap: 6px;
@@ -103,6 +116,44 @@
 }
 
 .reverb-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+/* Volume slider - same style as reverb */
+.volume-slider {
+  width: 120px;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--bg-elevated);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent-primary);
+  cursor: pointer;
+  box-shadow: 0 2px 8px var(--accent-glow);
+  transition: transform 0.1s ease;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.volume-slider::-moz-range-thumb {
   width: 18px;
   height: 18px;
   border-radius: 50%;

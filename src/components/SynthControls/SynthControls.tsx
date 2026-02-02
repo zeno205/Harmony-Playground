@@ -7,8 +7,10 @@ import './SynthControls.css';
 interface SynthControlsProps {
   instrument: InstrumentType;
   reverbMix: number;
+  volume: number;
   onInstrumentChange: (instrument: InstrumentType) => void;
   onReverbChange: (mix: number) => void;
+  onVolumeChange: (volume: number) => void;
   displayMode?: 'sharp' | 'flat' | 'both';
   onDisplayModeChange?: (mode: 'sharp' | 'flat' | 'both') => void;
 }
@@ -25,8 +27,10 @@ const INSTRUMENTS: { value: InstrumentType; label: string; icon: React.ReactNode
 export const SynthControls: React.FC<SynthControlsProps> = ({
   instrument,
   reverbMix,
+  volume,
   onInstrumentChange,
   onReverbChange,
+  onVolumeChange,
   displayMode = 'sharp',
   onDisplayModeChange
 }) => {
@@ -49,18 +53,35 @@ export const SynthControls: React.FC<SynthControlsProps> = ({
         </div>
       </div>
       
-      <div className="control-group">
-        <label>Reverb</label>
-        <div className="slider-container">
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={reverbMix * 100}
-            onChange={(e) => onReverbChange(parseInt(e.target.value, 10) / 100)}
-            className="reverb-slider"
-          />
-          <span className="slider-value">{Math.round(reverbMix * 100)}%</span>
+      <div className="control-group audio-controls">
+        <div className="audio-control-item">
+          <label>Reverb</label>
+          <div className="slider-container">
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={reverbMix * 100}
+              onChange={(e) => onReverbChange(parseInt(e.target.value, 10) / 100)}
+              className="reverb-slider"
+            />
+            <span className="slider-value">{Math.round(reverbMix * 100)}%</span>
+          </div>
+        </div>
+
+        <div className="audio-control-item">
+          <label>Volume</label>
+          <div className="slider-container">
+            <input
+              type="range"
+              min="0"
+              max="150"
+              value={volume * 100}
+              onChange={(e) => onVolumeChange(parseInt(e.target.value, 10) / 100)}
+              className="volume-slider"
+            />
+            <span className="slider-value">{Math.round(volume * 100)}%</span>
+          </div>
         </div>
       </div>
 

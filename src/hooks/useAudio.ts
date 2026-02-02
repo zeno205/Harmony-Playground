@@ -145,6 +145,7 @@ export function useAudio() {
   const [isInitialized, setIsInitialized] = useState(false);
   const instrumentRef = useRef<InstrumentType>('piano');
   const reverbMixRef = useRef(0.2);
+  const volumeRef = useRef(1.0);
   
   // Logging infrastructure
   const logsRef = useRef<LogEntry[]>([]);
@@ -283,7 +284,7 @@ export function useAudio() {
       compressorRef.current = compressor;
 
       const masterGain = ctx.createGain();
-      masterGain.gain.value = 0.6;
+      masterGain.gain.value = volumeRef.current;
       masterGainRef.current = masterGain;
 
       const convolver = await createReverb(ctx);
@@ -294,7 +295,8 @@ export function useAudio() {
       reverbGainRef.current = reverbGain;
 
       const dryGain = ctx.createGain();
-      dryGain.gain.value = 1;
+      // Proper wet/dry crossfade: dry decreases as reverb increases
+      dryGain.gain.value = 1 - reverbMixRef.current;
       dryGainRef.current = dryGain;
 
       masterGain.connect(dryGain);
@@ -303,6 +305,7 @@ export function useAudio() {
       dryGain.connect(compressor);
       reverbGain.connect(compressor);
       compressor.connect(ctx.destination);
+
 
       setIsInitialized(true);
     }
@@ -626,8 +629,17 @@ export function useAudio() {
 
   const setReverbMix = useCallback((mix: number) => {
     reverbMixRef.current = mix;
-    if (reverbGainRef.current) {
+    if (reverbGainRef.current && dryGainRef.current) {
+      // Proper wet/dry crossfade
       reverbGainRef.current.gain.value = mix;
+      dryGainRef.current.gain.value = 1 - mix;
+    }
+  }, []);
+
+  const setVolume = useCallback((volume: number) => {
+    volumeRef.current = volume;
+    if (masterGainRef.current) {
+      masterGainRef.current.gain.value = volume;
     }
   }, []);
 
@@ -777,6 +789,7 @@ export function useAudio() {
     stopAll,
     setInstrument,
     setReverbMix,
+    setVolume,
     isInitialized,
   };
 }
