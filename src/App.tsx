@@ -844,17 +844,38 @@ function AppContent() {
       />
       
       {/* Voicing Editor Modal */}
-      {editingVoicingChordId && editingVoicingData && (
-        <VoicingEditorModal
-          isOpen={true}
-          chordId={editingVoicingChordId}
-          chordName={editingVoicingData.chordName}
-          currentNotes={editingVoicingData.currentNotes}
-          defaultNotes={editingVoicingData.defaultNotes}
-          onSave={(notes) => handleSaveVoicing(editingVoicingChordId, notes)}
-          onClose={handleCloseVoicingEditor}
-        />
-      )}
+      {editingVoicingChordId && editingVoicingData && (() => {
+        // Recalculate current voicing dynamically based on latest customVoicings state
+        const diatonicChord = chords.find(c => `${c.name.split(' ')[0]}-${c.type}` === editingVoicingChordId);
+        const additionalChord = additionalChords.find(c => c.id === editingVoicingChordId);
+        const chord = diatonicChord || additionalChord;
+
+        if (!chord) return null;
+
+        const rootMidi = diatonicChord ? chord.rootMidi : (additionalChord as ExtendedChordInfo).rootMidi;
+        const chordType = diatonicChord ? chord.type as ChordType : (additionalChord as ExtendedChordInfo).type as ChordType;
+
+        // Get CURRENT voicing (will update when customVoicings changes)
+        const currentVoicing = applyCustomVoicing(
+          editingVoicingChordId,
+          customVoicings,
+          rootMidi,
+          chordType,
+          instrument
+        );
+
+        return (
+          <VoicingEditorModal
+            isOpen={true}
+            chordId={editingVoicingChordId}
+            chordName={editingVoicingData.chordName}
+            currentNotes={currentVoicing.notes}
+            defaultNotes={editingVoicingData.defaultNotes}
+            onSave={(notes) => handleSaveVoicing(editingVoicingChordId, notes)}
+            onClose={handleCloseVoicingEditor}
+          />
+        );
+      })()}
       
       {/* Key Capture Overlay for Rebinding */}
       {rebindingChordId && (() => {
