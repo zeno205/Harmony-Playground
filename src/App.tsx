@@ -33,12 +33,12 @@ interface AppSettings {
 function generateDefaultKeyBindings(): Map<string, string> {
   const bindings = new Map<string, string>();
   
-  // Diatonic slots 0-6: keys 1-7
+  // Diatonic slots 0-6: keys 1-7 (Map<slotId, key>)
   for (let i = 0; i < 7; i++) {
     bindings.set(`diatonic-${i}`, (i + 1).toString());
   }
   
-  // Custom chord slots: keys 8, 9, 0, -, =
+  // Custom chord slots: keys 8, 9, 0, -, = (Map<slotId, key>)
   const additionalKeys = ['8', '9', '0', '-', '='];
   additionalKeys.forEach((key, index) => {
     bindings.set(`custom-${index}`, key);
@@ -135,11 +135,12 @@ function AppContent() {
             setAdditionalChords(settings.additionalChords);
           }
           if (settings.keyBindings) {
-            // Deserialize key bindings from object to Map
-            const bindingsMap = new Map<string, string>(
-              Object.entries(settings.keyBindings)
-            );
-            setKeyBindings(bindingsMap);
+            // Deserialize key bindings from object to Map (only if non-empty)
+            const bindingsEntries = Object.entries(settings.keyBindings);
+            if (bindingsEntries.length > 0) {
+              const bindingsMap = new Map<string, string>(bindingsEntries);
+              setKeyBindings(bindingsMap);
+            }
           }
         }
       } catch (e) {
@@ -195,11 +196,14 @@ function AppContent() {
   
   // Initialize key bindings on mount (only if no saved bindings)
   useEffect(() => {
-    if (keyBindings.size === 0) {
+    if (isLoaded && keyBindings.size === 0) {
       const defaultBindings = generateDefaultKeyBindings();
+      console.log('[KeyBindings] Initializing default bindings:', Array.from(defaultBindings.entries()));
       setKeyBindings(defaultBindings);
+    } else if (isLoaded && keyBindings.size > 0) {
+      console.log('[KeyBindings] Using saved bindings:', Array.from(keyBindings.entries()));
     }
-  }, []);
+  }, [isLoaded, keyBindings.size]);
 
   useEffect(() => {
     return () => {
@@ -489,11 +493,14 @@ function AppContent() {
   // Keyboard handling
   useEffect(() => {
     // Build reverse lookup: key -> slotId
+    // keyBindings Map is <slotId, key>, so forEach gives us (key, slotId)
     const keyToSlotMap = new Map<string, string>();
     keyBindings.forEach((key, slotId) => {
       keyToSlotMap.set(key, slotId);
       keyToSlotMap.set(key.toLowerCase(), slotId); // Also add lowercase version
     });
+    
+    console.log('[KeyBindings] Keyboard handler initialized. Key to slot map:', Array.from(keyToSlotMap.entries()));
     
     const handleKeyDown = (e: KeyboardEvent) => {
       // If in rebinding mode, capture the key
@@ -509,6 +516,8 @@ function AppContent() {
       
       // Try to find slot by key binding (check both original and normalized)
       const slotId = keyToSlotMap.get(key) || keyToSlotMap.get(normalizedKey);
+      
+      console.log('[KeyBindings] Key pressed:', key, 'Slot found:', slotId);
       
       if (slotId) {
         // Parse the slot to find the actual chord
