@@ -27,12 +27,9 @@ interface VoicingEditorProps {
 const KEYBOARD_START = 36; // C2
 const KEYBOARD_END = 84;   // C6
 
-// Black key pattern (true = black key, false = white key)
-// Pattern repeats every octave: C, C#, D, D#, E, F, F#, G, G#, A, A#, B
-const BLACK_KEY_PATTERN = [false, true, false, true, false, false, true, false, true, false, true, false];
-
 // Note names for display
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+const WHITE_KEYS = [0, 2, 4, 5, 7, 9, 11]; // C, D, E, F, G, A, B
 
 /**
  * Get note name with octave from MIDI number
@@ -48,7 +45,7 @@ function getMidiNoteName(midi: number): string {
  */
 function isBlackKey(midi: number): boolean {
   const noteIndex = midi % 12;
-  return BLACK_KEY_PATTERN[noteIndex];
+  return !WHITE_KEYS.includes(noteIndex);
 }
 
 export default function VoicingEditor({
@@ -75,23 +72,48 @@ export default function VoicingEditor({
   };
   
   // Generate keyboard keys
-  const keys = [];
+  const keys: { midi: number; isBlack: boolean; isSelected: boolean; noteName: string; octave: number }[] = [];
   for (let midi = KEYBOARD_START; midi <= KEYBOARD_END; midi++) {
     const isBlack = isBlackKey(midi);
     const isSelected = selectedNotes.includes(midi);
     const noteName = getMidiNoteName(midi);
+    const octave = Math.floor(midi / 12) - 1;
     
     keys.push({
       midi,
       isBlack,
       isSelected,
-      noteName
+      noteName,
+      octave
     });
   }
   
   // Separate white and black keys for layering
   const whiteKeys = keys.filter(k => !k.isBlack);
   const blackKeys = keys.filter(k => k.isBlack);
+  const totalWhiteKeys = whiteKeys.length;
+  const keyWidthPct = 100 / totalWhiteKeys;
+  const blackKeyWidthPct = keyWidthPct * 0.6;
+  
+  // Calculate black key position (matching PianoKeyboard logic)
+  const getBlackKeyPosition = (midi: number) => {
+    const noteClass = midi % 12;
+    const octaveStart = Math.floor(midi / 12) * 12;
+    const octaveOffset = midi >= KEYBOARD_START ? (octaveStart - KEYBOARD_START) / 12 : 0;
+    
+    // Black keys positioned at boundaries between white keys
+    const blackKeyPositions: { [key: number]: number } = {
+      1: 1,   // C# (between C and D)
+      3: 2,   // D# (between D and E)
+      6: 4,   // F# (between F and G)
+      8: 5,   // G# (between G and A)
+      10: 6,  // A# (between A and B)
+    };
+    
+    const posInOctave = blackKeyPositions[noteClass] || 0;
+    const whiteKeysPerOctave = 7;
+    return (octaveOffset * whiteKeysPerOctave + posInOctave) * keyWidthPct;
+  };
   
   return (
     <div className="voicing-editor">
@@ -121,35 +143,33 @@ export default function VoicingEditor({
           {/* White keys layer */}
           <div className="voicing-editor-white-keys">
             {whiteKeys.map(key => (
-              <button
+              <div
                 key={key.midi}
                 className={`voicing-editor-key voicing-editor-white-key ${key.isSelected ? 'selected' : ''}`}
                 onClick={() => handleNoteToggle(key.midi)}
                 title={key.noteName}
               >
-                {/* Show note name on C notes for orientation */}
-                {key.noteName.startsWith('C') && (
-                  <span className="voicing-editor-key-label">{key.noteName}</span>
-                )}
-              </button>
+                <span className="voicing-editor-key-label">
+                  {key.noteName}
+                </span>
+              </div>
             ))}
           </div>
           
           {/* Black keys layer (positioned absolutely) */}
           <div className="voicing-editor-black-keys">
             {blackKeys.map(key => {
-              // Calculate position based on white key offset
-              const whiteKeyIndex = whiteKeys.findIndex(wk => wk.midi > key.midi) - 1;
-              const leftOffset = whiteKeyIndex * (100 / whiteKeys.length);
-              
+              const left = getBlackKeyPosition(key.midi);
               return (
-                <button
+                <div
                   key={key.midi}
                   className={`voicing-editor-key voicing-editor-black-key ${key.isSelected ? 'selected' : ''}`}
-                  style={{ left: `${leftOffset + (100 / whiteKeys.length / 2)}%` }}
+                  style={{ left: `${left}%`, width: `${blackKeyWidthPct}%` }}
                   onClick={() => handleNoteToggle(key.midi)}
                   title={key.noteName}
-                />
+                >
+                  <span className="voicing-editor-key-label">{NOTE_NAMES[key.midi % 12]}</span>
+                </div>
               );
             })}
           </div>
