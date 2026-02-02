@@ -1,7 +1,12 @@
 {
-  "name": "a-music-app-that-lets-you-play-major-and-minor",
+  "name": "harmony-playground",
   "version": "0.1.0",
   "private": true,
+  "description": "Harmony Playground — in-browser chord playground and synthesizer",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zeno205/Harmony-Playground.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
