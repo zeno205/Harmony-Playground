@@ -105,6 +105,7 @@ function AppContent() {
   // Load saved settings
   useEffect(() => {
     const loadSettings = async () => {
+      let loadedKeyBindings = false;
       try {
         const saved = await persistence.getItem(STORAGE_KEY);
         if (saved) {
@@ -146,19 +147,19 @@ function AppContent() {
             );
             if (hasSlotBasedBindings) {
               setKeyBindings(bindingsMap);
-            } else {
-              // Old format detected - regenerate defaults
-              console.log('Migrating key bindings to slot-based format');
-              setKeyBindings(generateDefaultKeyBindings());
+              loadedKeyBindings = true;
             }
-          } else {
-            // No saved bindings - use defaults
-            setKeyBindings(generateDefaultKeyBindings());
           }
         }
       } catch (e) {
         console.error('Failed to load settings:', e);
       }
+      
+      // Always ensure key bindings are set (first visit or old format migration)
+      if (!loadedKeyBindings) {
+        setKeyBindings(generateDefaultKeyBindings());
+      }
+      
       setIsLoaded(true);
     };
     loadSettings();
