@@ -28,12 +28,15 @@ export const PianoKeyboard: React.FC<PianoKeyboardProps> = ({
       midi: i,
       isBlack: !WHITE_KEYS.includes(noteClass),
       note: NOTE_NAMES[noteClass],
-      octave: Math.floor(i / 12)
+      octave: Math.floor(i / 12) - 1  // MIDI 60 = C4
     });
   }
 
   const whiteKeys = keys.filter((k) => !k.isBlack);
   const blackKeys = keys.filter((k) => k.isBlack);
+  const totalWhiteKeys = whiteKeys.length;
+  const keyWidthPct = 100 / totalWhiteKeys; // percentage width per white key
+  const blackKeyWidthPct = keyWidthPct * 0.6; // black keys ~60% of white key width
 
   const rootIdx = AVAILABLE_KEYS.indexOf(selectedKey);
   const intervals = mode === 'major' ? [0, 2, 4, 5, 7, 9, 11] : [0, 2, 3, 5, 7, 8, 10];
@@ -51,20 +54,18 @@ export const PianoKeyboard: React.FC<PianoKeyboardProps> = ({
     const octaveStart = Math.floor(midi / 12) * 12;
     const octaveOffset = midi >= START_NOTE ? (octaveStart - START_NOTE) / 12 : 0;
     
+    // Black keys positioned at boundaries between white keys (1 = C#/Db, 2 = D#/Eb, etc.)
     const blackKeyPositions: { [key: number]: number } = {
-      1: 0.75,   // C#
-      3: 1.75,   // D#
-      6: 3.75,   // F#
-      8: 4.75,   // G#
-      10: 5.75,  // A#
+      1: 1,   // C# (between C and D)
+      3: 2,   // D# (between D and E)
+      6: 4,   // F# (between F and G)
+      8: 5,   // G# (between G and A)
+      10: 6,  // A# (between A and B)
     };
     
     const posInOctave = blackKeyPositions[noteClass] || 0;
     const whiteKeysPerOctave = 7;
-    const totalWhiteKeys = whiteKeys.length;
-    const keyWidth = 100 / totalWhiteKeys;
-    
-    return (octaveOffset * whiteKeysPerOctave + posInOctave) * keyWidth;
+    return (octaveOffset * whiteKeysPerOctave + posInOctave) * keyWidthPct;
   };
 
   return (
@@ -94,7 +95,7 @@ export const PianoKeyboard: React.FC<PianoKeyboardProps> = ({
               <div
                 key={key.midi}
                 className={`piano-key black ${isPlayed ? 'played' : ''} ${isInScale && !isPlayed ? 'in-scale' : ''}`}
-                style={{ left: `${left}%` }}
+                style={{ left: `${left}%`, width: `${blackKeyWidthPct}%` }}
               >
                 <span className="key-label">{key.note}</span>
               </div>
