@@ -262,24 +262,37 @@ function AppContent() {
       ([slotId, boundKey]) => boundKey === key && slotId !== rebindingChordId
     )?.[0];
     
-    if (existingSlotId) {
-      // Find the slot name for display
-      let conflictName = existingSlotId;
-      if (existingSlotId.startsWith('diatonic-')) {
-        const slotIndex = parseInt(existingSlotId.replace('diatonic-', ''));
-        conflictName = chords[slotIndex]?.name || `Diatonic slot ${slotIndex + 1}`;
-      } else if (existingSlotId.startsWith('custom-')) {
-        const slotIndex = parseInt(existingSlotId.replace('custom-', ''));
-        conflictName = additionalChords[slotIndex]?.shortName || `Custom slot ${slotIndex + 1}`;
-      }
-      
-      alert(`Key "${key}" is already bound to ${conflictName}`);
-      return;
-    }
-    
-    // Update binding
+    // Update binding (allow override, remove from previous slot if duplicate)
     setKeyBindings(prev => {
       const newMap = new Map(prev);
+      
+      // If key was bound elsewhere, remove it and notify user
+      if (existingSlotId) {
+        let conflictName = existingSlotId;
+        if (existingSlotId.startsWith('diatonic-')) {
+          const slotIndex = parseInt(existingSlotId.replace('diatonic-', ''));
+          conflictName = chords[slotIndex]?.name || `Diatonic slot ${slotIndex + 1}`;
+        } else if (existingSlotId.startsWith('custom-')) {
+          const slotIndex = parseInt(existingSlotId.replace('custom-', ''));
+          conflictName = additionalChords[slotIndex]?.shortName || `Custom slot ${slotIndex + 1}`;
+        }
+        
+        // Remove the key from the old slot
+        newMap.delete(existingSlotId);
+        
+        // Show notice (non-blocking)
+        console.log(`Key "${key}" moved from ${conflictName}`);
+        // Use a toast-style notification if available, otherwise brief console notice
+        setTimeout(() => {
+          // This creates a brief visual indicator without blocking
+          const notice = document.createElement('div');
+          notice.textContent = `Key "${key}" moved from ${conflictName}`;
+          notice.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#000;padding:8px 16px;border-radius:8px;z-index:9999;font-size:14px;font-weight:500;';
+          document.body.appendChild(notice);
+          setTimeout(() => notice.remove(), 2000);
+        }, 0);
+      }
+      
       newMap.set(rebindingChordId, key);
       return newMap;
     });
