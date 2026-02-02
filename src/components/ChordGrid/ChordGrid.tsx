@@ -62,8 +62,7 @@ export const ChordGrid: React.FC<ChordGridProps> = ({
         {chords.map((chord, index) => {
           const isActive = activeChord === index;
           const color = CHORD_COLORS[index];
-          const rootNoteName = NOTE_NAMES[chord.rootMidi % 12];
-          const chordId = `${rootNoteName}-${chord.type}`;
+          const slotId = `diatonic-${index}`;
           
           return (
             <button
@@ -96,7 +95,7 @@ export const ChordGrid: React.FC<ChordGridProps> = ({
                 {chord.notes.map(n => NOTE_NAMES[n % 12]).join(' · ')}
               </div>
               <div className="chord-shortcut">
-                <kbd>{keyBindings.get(chordId) || '\u2014'}</kbd>
+                <kbd>{keyBindings.get(slotId) || '\u2014'}</kbd>
               </div>
             </button>
           );
@@ -111,6 +110,7 @@ export const ChordGrid: React.FC<ChordGridProps> = ({
             {additionalChords.map((chord, index) => {
               const color = ADDITIONAL_CHORD_COLORS[index];
               const isActive = activeCustomChord === index;
+              const slotId = `custom-${index}`;
               return (
                 <div
                   key={chord.id}
@@ -170,7 +170,7 @@ export const ChordGrid: React.FC<ChordGridProps> = ({
                     }).join(' · ')}
                   </div>
                   <div className="chord-shortcut">
-                    <kbd>{keyBindings.get(chord.id) || '\u2014'}</kbd>
+                    <kbd>{keyBindings.get(slotId) || '\u2014'}</kbd>
                   </div>
                 </div>
               );

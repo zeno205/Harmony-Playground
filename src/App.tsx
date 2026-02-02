@@ -26,28 +26,22 @@ interface AppSettings {
   volume: number;
   customVoicings?: Record<string, number[]>; // Map serialized as object
   additionalChords?: ExtendedChordInfo[]; // Extra custom chords (slots 8, 9, 0, etc.)
-  keyBindings?: Record<string, string>; // Map of chordId -> key
+  keyBindings?: Record<string, string>; // Map of slotId -> key (e.g., "diatonic-0" -> "1")
 }
 
-// Generate default key bindings based on current hardcoded mappings
-function generateDefaultKeyBindings(
-  diatonicChords: ChordInfo[], 
-  customChords: ExtendedChordInfo[]
-): Map<string, string> {
+// Generate default key bindings based on slot positions (not chord IDs)
+function generateDefaultKeyBindings(): Map<string, string> {
   const bindings = new Map<string, string>();
   
-  // Diatonic chords: keys 1-7
-  diatonicChords.forEach((chord, index) => {
-    const chordId = getChordId(chord);
-    bindings.set(chordId, (index + 1).toString());
-  });
+  // Diatonic slots 0-6: keys 1-7
+  for (let i = 0; i < 7; i++) {
+    bindings.set(`diatonic-${i}`, (i + 1).toString());
+  }
   
-  // Additional custom chords: keys 8, 9, 0, -, =
+  // Custom chord slots: keys 8, 9, 0, -, =
   const additionalKeys = ['8', '9', '0', '-', '='];
-  customChords.forEach((chord, index) => {
-    if (index < additionalKeys.length) {
-      bindings.set(chord.id, additionalKeys[index]);
-    }
+  additionalKeys.forEach((key, index) => {
+    bindings.set(`custom-${index}`, key);
   });
   
   return bindings;
@@ -199,13 +193,13 @@ function AppContent() {
     stopAll();
   }, [selectedKey, mode, stopAll, clearPendingTimeouts]);
   
-  // Initialize key bindings when chords change (only if no saved bindings)
+  // Initialize key bindings on mount (only if no saved bindings)
   useEffect(() => {
-    if (chords.length > 0 && keyBindings.size === 0) {
-      const defaultBindings = generateDefaultKeyBindings(chords, additionalChords);
+    if (keyBindings.size === 0) {
+      const defaultBindings = generateDefaultKeyBindings();
       setKeyBindings(defaultBindings);
     }
-  }, [chords, additionalChords]);
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -228,9 +222,9 @@ function AppContent() {
     setAudioVolume(volume);
   }, [volume, setAudioVolume]);
   
-  // Rebinding handlers
-  const handleStartRebind = useCallback((chordId: string) => {
-    setRebindingChordId(chordId);
+  // Rebinding handlers (uses slot IDs like "diatonic-0" or "custom-1")
+  const handleStartRebind = useCallback((slotId: string) => {
+    setRebindingChordId(slotId);
   }, []);
   
   const handleCancelRebind = useCallback(() => {
@@ -256,16 +250,21 @@ function AppContent() {
       return;
     }
     
-    // Check for duplicate bindings
-    const existingChordId = Array.from(keyBindings.entries()).find(
-      ([chordId, boundKey]) => boundKey === key && chordId !== rebindingChordId
+    // Check for duplicate bindings (rebindingChordId is now a slotId like "diatonic-0" or "custom-1")
+    const existingSlotId = Array.from(keyBindings.entries()).find(
+      ([slotId, boundKey]) => boundKey === key && slotId !== rebindingChordId
     )?.[0];
     
-    if (existingChordId) {
-      // Find chord name for the conflicting chord
-      const conflictChord = chords.find(c => getChordId(c) === existingChordId);
-      const conflictAdditional = additionalChords.find(c => c.id === existingChordId);
-      const conflictName = conflictChord?.name || conflictAdditional?.name || existingChordId;
+    if (existingSlotId) {
+      // Find the slot name for display
+      let conflictName = existingSlotId;
+      if (existingSlotId.startsWith('diatonic-')) {
+        const slotIndex = parseInt(existingSlotId.replace('diatonic-', ''));
+        conflictName = chords[slotIndex]?.name || `Diatonic slot ${slotIndex + 1}`;
+      } else if (existingSlotId.startsWith('custom-')) {
+        const slotIndex = parseInt(existingSlotId.replace('custom-', ''));
+        conflictName = additionalChords[slotIndex]?.shortName || `Custom slot ${slotIndex + 1}`;
+      }
       
       alert(`Key "${key}" is already bound to ${conflictName}`);
       return;
@@ -419,7 +418,12 @@ function AppContent() {
       return;
     }
     if (isEditingKeybinding) {
-      handleStartRebind(chord.id);
+      // Use slot-based ID for key bindings
+      const chordIndex = additionalChords.findIndex(c => c.id === chord.id);
+      if (chordIndex >= 0) {
+        const slotId = `custom-${chordIndex}`;
+        handleStartRebind(slotId);
+      }
       setEditMode('none');
       return;
     }
@@ -484,11 +488,11 @@ function AppContent() {
 
   // Keyboard handling
   useEffect(() => {
-    // Build reverse lookup: key -> chord ID
-    const keyToChordIdMap = new Map<string, string>();
-    keyBindings.forEach((key, chordId) => {
-      keyToChordIdMap.set(key, chordId);
-      keyToChordIdMap.set(key.toLowerCase(), chordId); // Also add lowercase version
+    // Build reverse lookup: key -> slotId
+    const keyToSlotMap = new Map<string, string>();
+    keyBindings.forEach((key, slotId) => {
+      keyToSlotMap.set(key, slotId);
+      keyToSlotMap.set(key.toLowerCase(), slotId); // Also add lowercase version
     });
     
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -503,33 +507,36 @@ function AppContent() {
       const key = e.key;
       const normalizedKey = key.toLowerCase();
       
-      // Try to find chord by key binding (check both original and normalized)
-      const chordId = keyToChordIdMap.get(key) || keyToChordIdMap.get(normalizedKey);
+      // Try to find slot by key binding (check both original and normalized)
+      const slotId = keyToSlotMap.get(key) || keyToSlotMap.get(normalizedKey);
       
-      if (chordId) {
-        // Find the chord (check diatonic first, then additional)
-        const diatonicChord = chords.find(c => getChordId(c) === chordId);
-        const additionalChord = additionalChords.find(c => c.id === chordId);
-        
-        if (diatonicChord) {
-          pressedKeysRef.current.add(normalizedKey);
-          playChord(diatonicChord);
-          return;
-        }
-        
-        if (additionalChord) {
-          pressedKeysRef.current.add(normalizedKey);
-          handleLibraryChordSelect(additionalChord);
-          return;
+      if (slotId) {
+        // Parse the slot to find the actual chord
+        if (slotId.startsWith('diatonic-')) {
+          const slotIndex = parseInt(slotId.replace('diatonic-', ''));
+          const chord = chords[slotIndex];
+          if (chord) {
+            pressedKeysRef.current.add(normalizedKey);
+            playChord(chord);
+            return;
+          }
+        } else if (slotId.startsWith('custom-')) {
+          const slotIndex = parseInt(slotId.replace('custom-', ''));
+          const chord = additionalChords[slotIndex];
+          if (chord) {
+            pressedKeysRef.current.add(normalizedKey);
+            handleLibraryChordSelect(chord);
+            return;
+          }
         }
       }
     };
 
     const handleKeyUp = (e: KeyboardEvent) => {
       const normalizedKey = e.key.toLowerCase();
-      const chordId = keyToChordIdMap.get(e.key) || keyToChordIdMap.get(normalizedKey);
+      const slotId = keyToSlotMap.get(e.key) || keyToSlotMap.get(normalizedKey);
       
-      if (chordId) {
+      if (slotId) {
         // Remove this key from pressed keys
         pressedKeysRef.current.delete(e.key);
         pressedKeysRef.current.delete(normalizedKey);
@@ -576,8 +583,9 @@ function AppContent() {
       return;
     }
     if (isEditingKeybinding) {
-      const chordId = getChordId(chord);
-      handleStartRebind(chordId);
+      // Use slot-based ID for key bindings
+      const slotId = `diatonic-${chord.degree}`;
+      handleStartRebind(slotId);
       setEditMode('none');
       return;
     }
@@ -830,9 +838,15 @@ function AppContent() {
       
       {/* Key Capture Overlay for Rebinding */}
       {rebindingChordId && (() => {
-        const diatonicChord = chords.find(c => getChordId(c) === rebindingChordId);
-        const additionalChord = additionalChords.find(c => c.id === rebindingChordId);
-        const chordName = diatonicChord?.name || additionalChord?.shortName || rebindingChordId;
+        // rebindingChordId is now a slotId like "diatonic-0" or "custom-1"
+        let chordName = rebindingChordId;
+        if (rebindingChordId.startsWith('diatonic-')) {
+          const slotIndex = parseInt(rebindingChordId.replace('diatonic-', ''));
+          chordName = chords[slotIndex]?.name || `Diatonic slot ${slotIndex + 1}`;
+        } else if (rebindingChordId.startsWith('custom-')) {
+          const slotIndex = parseInt(rebindingChordId.replace('custom-', ''));
+          chordName = additionalChords[slotIndex]?.shortName || `Custom slot ${slotIndex + 1}`;
+        }
         const currentKey = keyBindings.get(rebindingChordId) || '—';
         
         return (
