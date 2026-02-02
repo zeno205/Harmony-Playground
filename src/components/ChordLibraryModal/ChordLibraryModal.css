@@ -261,7 +261,7 @@
 .chord-library-add-btn {
   width: 100%;
   padding: 1rem;
-  background: var(--accent-primary);
+  background: var(--play-btn-bg);
   color: white;
   border: none;
   border-radius: 8px;
@@ -269,12 +269,13 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 12px var(--play-btn-glow);
 }
 
 .chord-library-add-btn:hover:not(:disabled) {
-  background: var(--accent-hover);
+  background: var(--play-btn-hover);
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px var(--accent-glow);
+  box-shadow: 0 6px 20px var(--play-btn-glow);
 }
 
 .chord-library-add-btn:disabled {

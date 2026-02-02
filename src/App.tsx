@@ -819,18 +819,6 @@ function AppContent({ resetHandlerRef }: { resetHandlerRef: React.MutableRefObje
                 </div>
                 <span>Play diatonic chords I–vii°</span>
               </div>
-              <div className="shortcut-row">
-                <div className="keys">
-                  <kbd>Q</kbd>
-                  <kbd>W</kbd>
-                  <kbd>E</kbd>
-                  <kbd>R</kbd>
-                  <kbd>T</kbd>
-                  <kbd>Y</kbd>
-                  <kbd>U</kbd>
-                </div>
-                <span>Alternative chord keys</span>
-              </div>
             </div>
           </div>
 
