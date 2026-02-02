@@ -14,6 +14,7 @@ import VoicingEditorModal from './components/VoicingEditorModal/VoicingEditorMod
 import { EditModeToolbar } from './components/EditModeToolbar/EditModeToolbar';
 import { EditModeProvider, useEditMode } from './contexts/EditModeContext';
 import { persistence } from './utils/persistence';
+import { showToast, showConfirm } from './utils/notice';
 import './App.css';
 
 const STORAGE_KEY = 'chordAppSettings';
@@ -47,7 +48,7 @@ function generateDefaultKeyBindings(): Map<string, string> {
   return bindings;
 }
 
-function AppContent() {
+function AppContent({ resetHandlerRef }: { resetHandlerRef: React.MutableRefObject<(() => void) | null> }) {
   const { isEditingVoicing, isEditingKeybinding, setEditMode } = useEditMode();
   const [selectedKey, setSelectedKey] = useState<Note>('C');
   const [mode, setMode] = useState<Mode>('major');
@@ -282,14 +283,9 @@ function AppContent() {
         
         // Show notice (non-blocking)
         console.log(`Key "${key}" moved from ${conflictName}`);
-        // Use a toast-style notification if available, otherwise brief console notice
+        // Reusable toast
         setTimeout(() => {
-          // This creates a brief visual indicator without blocking
-          const notice = document.createElement('div');
-          notice.textContent = `Key "${key}" moved from ${conflictName}`;
-          notice.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#f59e0b;color:#000;padding:8px 16px;border-radius:8px;z-index:9999;font-size:14px;font-weight:500;';
-          document.body.appendChild(notice);
-          setTimeout(() => notice.remove(), 2000);
+          showToast(`Key "${key}" moved from ${conflictName}`, { duration: 2000, background: '#f59e0b', color: '#000' });
         }, 0);
       }
       
@@ -355,6 +351,47 @@ function AppContent() {
     setEditingVoicingChordId(null);
     setEditingVoicingData(null);
   }, []);
+
+  // Reset all settings to default
+  const handleResetSettings = useCallback(async () => {
+    const confirmed = await showConfirm(
+      'Reset all settings to default?\n\nThis will clear:\n• Custom voicings\n• Keyboard shortcuts\n• Additional chords\n• Key/mode selection\n• Instrument settings\n• Reverb and volume',
+      { confirmText: 'Reset', cancelText: 'Cancel', danger: true }
+    );
+
+    if (!confirmed) return;
+    
+    try {
+      // Clear persisted storage
+      await persistence.removeItem(STORAGE_KEY);
+      
+      // Reset all state to defaults
+      setSelectedKey('C');
+      setMode('major');
+      setInstrument('piano');
+      setReverbMix(0.2);
+      setVolume(1.0);
+      setCustomVoicings(new Map());
+      setAdditionalChords([]);
+      setKeyBindings(generateDefaultKeyBindings());
+      setEditingVoicingChordId(null);
+      setEditingVoicingData(null);
+      setRebindingChordId(null);
+      
+      // Stop any playing audio
+      stopAll();
+      
+      console.log('All settings reset to default');
+    } catch (e) {
+      console.error('Failed to reset settings:', e);
+      alert('Failed to reset settings. Please try again.');
+    }
+  }, [stopAll]);
+
+  // Set the reset handler ref so the toolbar can access it
+  useEffect(() => {
+    resetHandlerRef.current = handleResetSettings;
+  }, [handleResetSettings, resetHandlerRef]);
 
   /**
    * Play a chord using the current instrument voicing.
@@ -911,10 +948,20 @@ function AppContent() {
   );
 }
 
+// Wrapper component that provides the reset handler to the EditModeProvider
 function App() {
+  // Create a ref to hold the reset handler from AppContent
+  const resetHandlerRef = React.useRef<(() => void) | null>(null);
+
+  const handleResetFromToolbar = useCallback(() => {
+    if (resetHandlerRef.current) {
+      resetHandlerRef.current();
+    }
+  }, []);
+
   return (
-    <EditModeProvider>
-      <AppContent />
+    <EditModeProvider onResetSettings={handleResetFromToolbar}>
+      <AppContent resetHandlerRef={resetHandlerRef} />
     </EditModeProvider>
   );
 }

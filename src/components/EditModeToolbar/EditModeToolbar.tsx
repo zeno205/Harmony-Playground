@@ -4,12 +4,12 @@
  */
 
 import React from 'react';
-import { Pencil, Keyboard } from 'lucide-react';
+import { Pencil, Keyboard, RotateCcw } from 'lucide-react';
 import { useEditMode } from '../../contexts/EditModeContext';
 import './EditModeToolbar.css';
 
 export function EditModeToolbar() {
-  const { isEditingVoicing, isEditingKeybinding, toggleVoicingMode, toggleKeybindingMode } = useEditMode();
+  const { isEditingVoicing, isEditingKeybinding, toggleVoicingMode, toggleKeybindingMode, handleResetSettings } = useEditMode();
 
   return (
     <div className="edit-mode-toolbar">
@@ -31,6 +31,16 @@ export function EditModeToolbar() {
       >
         <Keyboard size={18} />
         <span>Edit Keys</span>
+      </button>
+      
+      <button
+        className="edit-mode-btn reset-btn"
+        onClick={handleResetSettings}
+        title="Reset all settings to default"
+        aria-label="Reset all settings to default"
+      >
+        <RotateCcw size={18} />
+        <span>Reset All</span>
       </button>
       
       {(isEditingVoicing || isEditingKeybinding) && (

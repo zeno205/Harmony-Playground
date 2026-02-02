@@ -16,15 +16,17 @@ interface EditModeContextValue {
   toggleKeybindingMode: () => void;
   isEditingVoicing: boolean;
   isEditingKeybinding: boolean;
+  handleResetSettings?: () => void;
 }
 
 const EditModeContext = createContext<EditModeContextValue | undefined>(undefined);
 
 interface EditModeProviderProps {
   children: ReactNode;
+  onResetSettings?: () => void;
 }
 
-export function EditModeProvider({ children }: EditModeProviderProps) {
+export function EditModeProvider({ children, onResetSettings }: EditModeProviderProps) {
   const [editMode, setEditMode] = useState<EditMode>('none');
 
   const toggleVoicingMode = useCallback(() => {
@@ -41,7 +43,8 @@ export function EditModeProvider({ children }: EditModeProviderProps) {
     toggleVoicingMode,
     toggleKeybindingMode,
     isEditingVoicing: editMode === 'voicing',
-    isEditingKeybinding: editMode === 'keybinding'
+    isEditingKeybinding: editMode === 'keybinding',
+    handleResetSettings: onResetSettings
   };
 
   return (
