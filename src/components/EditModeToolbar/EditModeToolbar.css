@@ -1,95 +1,71 @@
-/* EditModeToolbar.css */
-
 .edit-mode-toolbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
+  gap: 10px;
+  padding: 12px;
   margin-bottom: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-tertiary);
 }
 
 .edit-mode-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 16px;
-  background: var(--bg-secondary);
+  min-height: 38px;
+  padding: 0 12px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
+  background: var(--bg-secondary);
   color: var(--text-secondary);
-  font-size: 0.9rem;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
   white-space: nowrap;
 }
 
 .edit-mode-btn:hover {
-  background: var(--bg-tertiary);
-  border-color: var(--border-hover);
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
   color: var(--text-primary);
 }
 
 .edit-mode-btn.active {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: white;
-  box-shadow: 0 0 16px var(--accent-glow);
-}
-
-.edit-mode-btn svg {
-  flex-shrink: 0;
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: var(--text-primary);
 }
 
 .edit-mode-btn.reset-btn {
   margin-left: auto;
-  background: var(--bg-secondary);
-  border-color: var(--border-color);
-  color: var(--text-secondary);
 }
 
 .edit-mode-btn.reset-btn:hover {
-  background: #dc2626;
-  border-color: #dc2626;
-  color: white;
-  transform: translateY(-1px);
+  background: rgba(217, 106, 106, 0.12);
+  border-color: rgba(217, 106, 106, 0.4);
+  color: #f0b0b0;
 }
 
 .edit-mode-hint {
-  flex: 1;
-  font-size: 0.85rem;
   color: var(--text-muted);
-  text-align: right;
-  padding-right: 8px;
-  animation: fadeIn 0.3s ease;
+  font-size: 0.82rem;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Mobile responsive */
 @media (max-width: 768px) {
   .edit-mode-toolbar {
     flex-direction: column;
     align-items: stretch;
-    gap: 8px;
   }
-  
+
   .edit-mode-btn {
     justify-content: center;
   }
-  
+
+  .edit-mode-btn.reset-btn {
+    margin-left: 0;
+  }
+
   .edit-mode-hint {
     text-align: center;
-    padding-right: 0;
   }
 }

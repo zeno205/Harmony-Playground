@@ -1,245 +1,199 @@
 .chord-grid-container {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  gap: 16px;
+}
+
+.chord-grid,
+.additional-chords-grid {
+  display: grid;
+  gap: 12px;
 }
 
 .chord-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .chord-card {
   position: relative;
-  background: var(--bg-elevated);
+  min-height: 132px;
+  padding: 14px;
   border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 16px 12px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  border-radius: 10px;
+  background: var(--bg-tertiary);
+  color: inherit;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 6px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
   overflow: hidden;
   font-family: inherit;
-  color: inherit;
 }
 
 .chord-card::before {
-  content: '';
+  content: "";
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
+  inset: 0 auto 0 0;
+  width: 3px;
   background: var(--chord-color);
-  opacity: 0.6;
-  transition: opacity 0.15s, height 0.15s;
+  opacity: 0.85;
 }
 
 .chord-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--chord-color);
-  box-shadow: 0 8px 24px var(--chord-glow);
-}
-
-.chord-card:hover::before {
-  opacity: 1;
+  background: var(--bg-elevated);
+  border-color: var(--chord-border, var(--border-strong));
 }
 
 .chord-card.active {
-  background: var(--chord-color);
-  border-color: var(--chord-color);
-  transform: scale(0.97);
-  box-shadow: 0 0 32px var(--chord-glow);
+  background: var(--chord-surface, var(--accent-soft));
+  border-color: var(--chord-border, var(--accent-border));
 }
 
-.chord-card.active::before {
-  height: 100%;
-  opacity: 0;
+.chord-card.active .chord-roman,
+.chord-card.active .chord-name,
+.chord-card.active .chord-notes,
+.chord-card.active .chord-shortcut kbd {
+  color: var(--text-primary);
+}
+
+.chord-card.active .chord-shortcut kbd {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .chord-degree {
   position: absolute;
-  top: 8px;
-  right: 10px;
-  font-size: 10px;
-  font-weight: 600;
+  top: 12px;
+  right: 14px;
+  font-size: 0.74rem;
   color: var(--text-muted);
-  opacity: 0.6;
 }
 
-.chord-card.active .chord-degree {
-  color: rgba(255,255,255,0.7);
-}
-
-.chord-card.custom-chord .chord-degree {
-  right: 32px; /* Make room for remove button */
+.chord-card.custom-chord .chord-degree,
+.chord-card.additional-chord .chord-degree {
+  right: 80px;
 }
 
 .remove-custom-chord {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 20px;
-  height: 20px;
-  border: none;
-  background: rgba(239, 68, 68, 0.8);
-  color: white;
-  border-radius: 50%;
-  font-size: 16px;
-  line-height: 1;
+  top: 10px;
+  right: 10px;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  font-size: 0.72rem;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.15s;
-  opacity: 0.7;
-  font-weight: bold;
-  padding: 0;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 
 .remove-custom-chord:hover {
-  opacity: 1;
-  background: rgba(239, 68, 68, 1);
-  transform: scale(1.1);
-}
-
-.chord-card.custom-chord {
-  border-style: dashed;
-  border-width: 2px;
-}
-
-.chord-card.custom-chord:hover {
-  border-style: solid;
+  background: rgba(217, 106, 106, 0.12);
+  border-color: rgba(217, 106, 106, 0.4);
+  color: #f0b0b0;
 }
 
 .chord-roman {
-  /* Make roman numeral secondary: smaller and lighter */
-  font-size: 1rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--text-muted);
-  line-height: 1;
-  margin-top: 4px;
-}
-
-.chord-card.active .chord-roman {
-  color: rgba(255,255,255,0.85);
+  text-transform: uppercase;
 }
 
 .chord-name {
-  /* Make chord name primary: larger and bolder for clarity */
-  font-size: 1.15rem;
+  font-size: 1.05rem;
+  font-weight: 600;
   color: var(--text-primary);
-  font-weight: 700;
-  margin-top: 2px;
-  letter-spacing: 0.2px;
-}
-
-.chord-card.active .chord-name {
-  color: white;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  line-height: 1.3;
+  padding-right: 56px;
 }
 
 .chord-notes {
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   color: var(--text-muted);
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-}
-
-.chord-card.active .chord-notes {
-  color: rgba(255,255,255,0.8);
+  line-height: 1.4;
 }
 
 .chord-shortcut {
-  margin-top: 8px;
+  margin-top: auto;
 }
 
 .chord-shortcut kbd {
-  background: rgba(0, 0, 0, 0.3);
-  padding: 3px 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  font-family: inherit;
-  border: 1px solid rgba(255,255,255,0.1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  font-size: 0.76rem;
 }
 
-.chord-card.active .chord-shortcut kbd {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  border-color: rgba(255,255,255,0.3);
-}
-
-/* Additional chords section */
 .additional-chords-section {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 16px;
+  border-top: 1px solid var(--border-color);
 }
 
 .additional-chords-label {
-  font-size: 0.8rem;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
-  font-weight: 600;
+  margin-bottom: 10px;
+  font-size: 0.84rem;
+  color: var(--text-secondary);
 }
 
 .additional-chords-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
-.chord-card.additional-chord {
+.chord-card.additional-chord,
+.chord-card.custom-chord {
   border-style: dashed;
-  border-width: 2px;
 }
 
-.chord-card.additional-chord:hover {
-  border-style: solid;
-}
-
-.chord-card.additional-chord .chord-roman {
-  display: none;
-}
-
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .chord-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-  
+
   .additional-chords-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .chord-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
+
   .additional-chords-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  
+
   .chord-card {
-    padding: 12px 8px;
-  }
-  
-  .chord-roman {
-    font-size: 0.95rem; /* scaled down on small screens */
+    min-height: 118px;
+    padding: 12px;
   }
 
   .chord-name {
-    font-size: 1rem; /* keep name readable on mobile */
+    padding-right: 0;
+  }
+
+  .chord-card.custom-chord .chord-degree,
+  .chord-card.additional-chord .chord-degree {
+    right: 14px;
+    top: auto;
+    bottom: 12px;
+  }
+
+  .remove-custom-chord {
+    position: static;
+    order: 4;
+    margin-top: 6px;
   }
 }

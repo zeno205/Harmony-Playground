@@ -21,26 +21,23 @@ interface ChordGridProps {
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 const CHORD_COLORS = [
-  { bg: '#14b8a6', glow: 'rgba(20, 184, 166, 0.4)' },   // I - Teal
-  { bg: '#3b82f6', glow: 'rgba(59, 130, 246, 0.4)' },   // ii - Blue
-  { bg: '#06b6d4', glow: 'rgba(6, 182, 212, 0.4)' },    // iii - Cyan
-  { bg: '#10b981', glow: 'rgba(16, 185, 129, 0.4)' },   // IV - Green
-  { bg: '#f59e0b', glow: 'rgba(245, 158, 11, 0.4)' },   // V - Amber
-  { bg: '#ef4444', glow: 'rgba(239, 68, 68, 0.4)' },    // vi - Red
-  { bg: '#ec4899', glow: 'rgba(236, 72, 153, 0.4)' },   // vii° - Pink
+  { bg: '#14b8a6', surface: 'rgba(20, 184, 166, 0.10)', border: 'rgba(20, 184, 166, 0.44)' },
+  { bg: '#3b82f6', surface: 'rgba(59, 130, 246, 0.10)', border: 'rgba(59, 130, 246, 0.44)' },
+  { bg: '#06b6d4', surface: 'rgba(6, 182, 212, 0.10)', border: 'rgba(6, 182, 212, 0.44)' },
+  { bg: '#10b981', surface: 'rgba(16, 185, 129, 0.10)', border: 'rgba(16, 185, 129, 0.44)' },
+  { bg: '#f59e0b', surface: 'rgba(245, 158, 11, 0.10)', border: 'rgba(245, 158, 11, 0.44)' },
+  { bg: '#ef4444', surface: 'rgba(239, 68, 68, 0.10)', border: 'rgba(239, 68, 68, 0.44)' },
+  { bg: '#ec4899', surface: 'rgba(236, 72, 153, 0.10)', border: 'rgba(236, 72, 153, 0.44)' },
 ];
 
 // Colors for additional custom chords
 const ADDITIONAL_CHORD_COLORS = [
-  { bg: '#8b5cf6', glow: 'rgba(139, 92, 246, 0.4)' },   // 8 - Violet
-  { bg: '#14b8a6', glow: 'rgba(20, 184, 166, 0.4)' },   // 9 - Teal
-  { bg: '#f97316', glow: 'rgba(249, 115, 22, 0.4)' },   // 0 - Orange
-  { bg: '#e11d48', glow: 'rgba(225, 29, 72, 0.4)' },    // - - Rose
-  { bg: '#0ea5e9', glow: 'rgba(14, 165, 233, 0.4)' },   // = - Sky
+  { bg: '#8b5cf6', surface: 'rgba(139, 92, 246, 0.10)', border: 'rgba(139, 92, 246, 0.44)' },
+  { bg: '#14b8a6', surface: 'rgba(20, 184, 166, 0.10)', border: 'rgba(20, 184, 166, 0.44)' },
+  { bg: '#f97316', surface: 'rgba(249, 115, 22, 0.10)', border: 'rgba(249, 115, 22, 0.44)' },
+  { bg: '#e11d48', surface: 'rgba(225, 29, 72, 0.10)', border: 'rgba(225, 29, 72, 0.44)' },
+  { bg: '#0ea5e9', surface: 'rgba(14, 165, 233, 0.10)', border: 'rgba(14, 165, 233, 0.44)' },
 ];
-
-// Keyboard shortcuts for additional chords
-const ADDITIONAL_SHORTCUTS = ['8', '9', '0', '-', '='];
 
 export const ChordGrid: React.FC<ChordGridProps> = ({
   chords,
@@ -70,7 +67,8 @@ export const ChordGrid: React.FC<ChordGridProps> = ({
               className={`chord-card ${isActive ? 'active' : ''}`}
               style={{
                 '--chord-color': color.bg,
-                '--chord-glow': color.glow,
+                '--chord-surface': color.surface,
+                '--chord-border': color.border,
               } as React.CSSProperties}
               onMouseDown={() => onChordMouseDown(chord)}
               onMouseUp={onChordMouseUp}
@@ -117,7 +115,8 @@ export const ChordGrid: React.FC<ChordGridProps> = ({
                   className={`chord-card additional-chord ${isActive ? 'active' : ''}`}
                   style={{
                     '--chord-color': color.bg,
-                    '--chord-glow': color.glow,
+                    '--chord-surface': color.surface,
+                    '--chord-border': color.border,
                     cursor: 'pointer'
                   } as React.CSSProperties}
                   onMouseDown={() => onAdditionalChordClick(chord)}
@@ -160,7 +159,7 @@ export const ChordGrid: React.FC<ChordGridProps> = ({
                     title="Remove chord"
                     aria-label={`Remove ${chord.shortName}`}
                   >
-                    ×
+                    Remove
                   </button>
                   <div className="chord-name">{chord.shortName}</div>
                   <div className="chord-notes">
@@ -181,4 +180,3 @@ export const ChordGrid: React.FC<ChordGridProps> = ({
     </div>
   );
 };
-

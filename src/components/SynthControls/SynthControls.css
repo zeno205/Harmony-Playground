@@ -1,214 +1,142 @@
-
 .synth-controls {
   display: flex;
   align-items: flex-start;
-  gap: 32px;
+  gap: 24px;
   flex-wrap: wrap;
 }
 
 .control-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.control-group label {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
-/* Audio controls group - stacks reverb and volume vertically */
-.audio-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.audio-control-item {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 8px;
 }
 
-.instrument-buttons {
+.control-group label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.audio-controls {
+  min-width: 220px;
+  gap: 10px;
+}
+
+.audio-control-item {
+  display: grid;
+  gap: 8px;
+}
+
+.instrument-buttons,
+.display-mode {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-.instrument-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 8px 10px;
-  background: var(--bg-elevated);
+.instrument-btn,
+.display-btn {
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.12s ease;
-  font-family: inherit;
-  min-width: 54px;
-}
-
-.instrument-btn:hover {
-  border-color: var(--border-hover);
   background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease;
 }
 
-.instrument-btn.active {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  box-shadow: 0 4px 12px var(--accent-glow);
+.instrument-btn {
+  min-height: 38px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.instrument-btn:hover,
+.display-btn:hover {
+  background: var(--bg-elevated);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.instrument-btn.active,
+.display-btn.active {
+  background: var(--accent-soft);
+  border-color: var(--accent-border);
+  color: var(--text-primary);
 }
 
 .inst-icon {
-  font-size: 18px;
-  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent-primary);
 }
 
 .inst-label {
-  font-size: 9px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.instrument-btn.active .inst-label {
-  color: rgba(255,255,255,0.9);
+  font-size: 0.84rem;
+  font-weight: 500;
 }
 
 .slider-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(120px, 160px) auto;
   align-items: center;
   gap: 12px;
 }
 
-.reverb-slider {
-  width: 120px;
-  height: 6px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: var(--bg-elevated);
-  border-radius: 3px;
-  outline: none;
-  cursor: pointer;
-}
-
-.reverb-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: pointer;
-  box-shadow: 0 2px 8px var(--accent-glow);
-  transition: transform 0.1s ease;
-}
-
-.reverb-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-}
-
-.reverb-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 2px 8px var(--accent-glow);
-}
-
-/* Volume slider - same style as reverb */
+.reverb-slider,
 .volume-slider {
-  width: 120px;
-  height: 6px;
+  width: 100%;
+  height: 4px;
+  margin: 0;
   -webkit-appearance: none;
   appearance: none;
-  background: var(--bg-elevated);
-  border-radius: 3px;
+  border-radius: 999px;
+  background: var(--border-strong);
   outline: none;
   cursor: pointer;
 }
 
+.reverb-slider::-webkit-slider-thumb,
 .volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: pointer;
-  box-shadow: 0 2px 8px var(--accent-glow);
-  transition: transform 0.1s ease;
-}
-
-.volume-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-}
-
-.volume-slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--accent-primary);
-  cursor: pointer;
+  width: 14px;
+  height: 14px;
   border: none;
-  box-shadow: 0 2px 8px var(--accent-glow);
+  border-radius: 50%;
+  background: var(--accent-primary);
+}
+
+.reverb-slider::-moz-range-thumb,
+.volume-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent-primary);
 }
 
 .slider-value {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-secondary);
   min-width: 40px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
   text-align: right;
+}
+
+.display-btn {
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0 10px;
+  font-weight: 600;
 }
 
 @media (max-width: 768px) {
   .synth-controls {
     width: 100%;
-    gap: 20px;
+    gap: 18px;
   }
-  
-  .instrument-buttons {
-    flex-wrap: wrap;
-  }
-  
+
   .slider-container {
-    width: 100%;
+    grid-template-columns: 1fr auto;
   }
-  
-  .reverb-slider {
-    flex: 1;
-  }
-}
-
-/* Display mode buttons for chord labels */
-.display-mode {
-  display: flex;
-  gap: 6px;
-}
-
-.display-btn {
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background: var(--bg-elevated);
-  cursor: pointer;
-  font-weight: 700;
-  min-width: 36px;
-}
-
-.display-btn.active {
-  background: var(--accent-primary);
-  border-color: var(--accent-primary);
-  color: white;
-  box-shadow: 0 4px 10px var(--accent-glow);
 }

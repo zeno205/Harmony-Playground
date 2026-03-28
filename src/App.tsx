@@ -707,25 +707,37 @@ function AppContent({ resetHandlerRef }: { resetHandlerRef: React.MutableRefObje
     setAdditionalChords(prev => prev.filter((_, i) => i !== index));
   };
 
+  const scaleOffsets = mode === 'major' ? [0, 2, 4, 5, 7, 9, 11] : [0, 2, 3, 5, 7, 8, 10];
+  const rootIndex = AVAILABLE_KEYS.indexOf(selectedKey);
+  const scaleNoteNames = scaleOffsets
+    .map((offset) => AVAILABLE_KEYS[(rootIndex + offset) % 12])
+    .join(' - ');
+  const chordPattern =
+    mode === 'major'
+      ? 'Maj - min - min - Maj - Maj - min - dim'
+      : 'min - dim - Maj - min - min - Maj - Maj';
+  const customChordStatus =
+    additionalChords.length > 0 ? `${additionalChords.length} custom chord${additionalChords.length === 1 ? '' : 's'}` : 'No custom chords';
+  const libraryCountLabel = additionalChords.length > 0 ? `${additionalChords.length} added` : '204 chords';
+  const diatonicShortcutRows = chords.map((chord, index) => ({
+    key: keyBindings.get(`diatonic-${index}`) || '—',
+    degree: chord.roman,
+    name: chord.name,
+  }));
+  const customShortcutRows = additionalChords.map((chord, index) => ({
+    key: keyBindings.get(`custom-${index}`) || '—',
+    name: chord.shortName,
+  }));
 
   return (
     <div className="app">
       <header className="app-header">
         <div className="header-content">
-          <div className="logo-section">
-            <div className="logo-icon">♪</div>
-            <div className="logo-text">
-              <h1>Harmony Playground</h1>
-              <p className="tagline">Interactive harmony playground</p>
-            </div>
-          </div>
-          <div className="quick-help">
-            <span className="help-item">
-              <kbd>1-7</kbd> Diatonic
-            </span>
-            <span className="help-item">
-              <kbd>8-0</kbd> Custom
-            </span>
+          <div className="title-block">
+            <h1>Harmony Playground</h1>
+            <p className="header-meta">
+              {selectedKey} {mode} • {instrument}
+            </p>
           </div>
         </div>
       </header>
@@ -748,27 +760,20 @@ function AppContent({ resetHandlerRef }: { resetHandlerRef: React.MutableRefObje
           />
 
           <div className="panel-divider" />
-          
+
           <div className="library-control">
             <button className="library-btn" onClick={handleOpenLibrary}>
-              <Library className="library-btn-icon" size={24} />
-              <span>Chord Library</span>
-              <span className="library-btn-count">
-                {additionalChords.length > 0 
-                  ? `${additionalChords.length} added` 
-                  : '204 chords'}
-              </span>
+              <Library className="library-btn-icon" size={18} />
+              <span>Chord library</span>
+              <span className="library-btn-count">{libraryCountLabel}</span>
             </button>
           </div>
         </section>
 
         <section className="chords-panel">
           <div className="panel-header">
-            <h2>
-              <span className="key-badge">{selectedKey}</span>
-              <span className="mode-badge">{mode}</span>
-              Diatonic Triads
-            </h2>
+            <h2>{selectedKey} {mode} triads</h2>
+            <div className="panel-meta">{customChordStatus}</div>
           </div>
           <EditModeToolbar />
           <ChordGrid
@@ -788,7 +793,7 @@ function AppContent({ resetHandlerRef }: { resetHandlerRef: React.MutableRefObje
 
         <section className="keyboard-panel">
           <div className="panel-header">
-            <h2>Keyboard Visualizer</h2>
+            <h2>Keyboard</h2>
             <div className="legend-inline">
               <span className="legend-item">
                 <span className="legend-dot played"></span>
@@ -805,54 +810,46 @@ function AppContent({ resetHandlerRef }: { resetHandlerRef: React.MutableRefObje
 
         <section className="info-panel">
           <div className="info-card shortcuts-card">
-            <h3>Keyboard Shortcuts</h3>
+            <h3>Shortcuts</h3>
             <div className="shortcuts-grid">
-              <div className="shortcut-row">
-                <div className="keys">
-                  <kbd>1</kbd>
-                  <kbd>2</kbd>
-                  <kbd>3</kbd>
-                  <kbd>4</kbd>
-                  <kbd>5</kbd>
-                  <kbd>6</kbd>
-                  <kbd>7</kbd>
-                </div>
-                <span>Play diatonic chords I–vii°</span>
+              <div className="shortcut-group">
+                {diatonicShortcutRows.map((row, index) => (
+                  <div className="shortcut-row" key={`diatonic-${index}`}>
+                    <kbd>{row.key}</kbd>
+                    <span className="shortcut-degree">{row.degree}</span>
+                    <span className="shortcut-name">{row.name}</span>
+                  </div>
+                ))}
               </div>
+              {customShortcutRows.length > 0 && (
+                <div className="shortcut-divider">
+                  Custom slots
+                </div>
+              )}
+              {customShortcutRows.length > 0 && (
+                <div className="shortcut-group">
+                  {customShortcutRows.map((row, index) => (
+                    <div className="shortcut-row" key={`custom-${index}`}>
+                      <kbd>{row.key}</kbd>
+                      <span className="shortcut-name">{row.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
           <div className="info-card theory-card">
-            <h3>About This Key</h3>
+            <h3>Scale</h3>
             <p className="scale-notes">
-              <strong>
-                {selectedKey} {mode}
-              </strong>{' '}
-              scale:{' '}
-              {mode === 'major'
-                ? (() => {
-                    const offsets = [0, 2, 4, 5, 7, 9, 11];
-                    const rootIdx = AVAILABLE_KEYS.indexOf(selectedKey);
-                    return offsets.map((o) => AVAILABLE_KEYS[(rootIdx + o) % 12]).join(' – ');
-                  })()
-                : (() => {
-                    const offsets = [0, 2, 3, 5, 7, 8, 10];
-                    const rootIdx = AVAILABLE_KEYS.indexOf(selectedKey);
-                    return offsets.map((o) => AVAILABLE_KEYS[(rootIdx + o) % 12]).join(' – ');
-                  })()}
+              <strong>{selectedKey} {mode}</strong> {scaleNoteNames}
             </p>
             <p className="theory-hint">
-              {mode === 'major'
-                ? 'Major keys typically sound bright and happy. The diatonic chords follow the pattern: Maj–min–min–Maj–Maj–min–dim.'
-                : 'Minor keys typically sound darker or melancholic. The diatonic chords follow the pattern: min–dim–Maj–min–min–Maj–Maj.'}
+              Chord pattern: {chordPattern}
             </p>
           </div>
         </section>
       </main>
-
-      <footer className="app-footer">
-        <p>Harmony Playground • Interactive harmony tool • Web Audio Synthesizer</p>
-      </footer>
       
       {/* Chord Library Modal */}
       <ChordLibraryModal
